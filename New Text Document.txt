@@ -2,4 +2,4 @@ niice there are some times when you serach the the whole value you wont find it 
 
 
 
-instead of var count where i pass the url to check https-client-snihostname column in this excel"C:\scripts\filtered_results.xlsx" . if value from https-client-snihostname column is available in json url that is a pass if it is not available then that is a fail, after going through all entries in https-client-snihostname column record results in excel
+instead of var count where i pass the url to check https-client-snihostname column in this excel"C:\scripts\filtered_results.xlsx" .   if value from https-client-snihostname column is available in json url that is a pass if it is not available then that is a fail, after going through all entries in https-client-snihostname column record results in excel
