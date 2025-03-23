@@ -18,17 +18,28 @@ def check_hostname(hostname):
     if not isinstance(hostname, str):
         return 'Fail'
     
-    hostname = hostname.lower()
+    hostname = hostname.lower() 
     
     if any(hostname in url for url in flat_urls):
         return 'Pass'
     
-    if '.' in hostname:
-        domain_part = hostname[hostname.find('.'):]
+    dot_positions = []
+    start_index = 0
+    
+    for _ in range(3):
+        dot_index = hostname.find('.', start_index)
+        if dot_index == -1:
+            break
+        dot_positions.append(dot_index)
+        start_index = dot_index + 1
+    
+    for dot_pos in dot_positions:
+        domain_part = hostname[dot_pos:]
         if any(domain_part in url for url in flat_urls):
             return 'Pass'
     
     return 'Fail'
+
 
 print(f"Sample hostnames from Excel (first 5): {df['https-client-snihostname'].head(5).tolist()}")
 
