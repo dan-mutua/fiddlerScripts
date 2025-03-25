@@ -9,6 +9,9 @@ def extract_saz_file(saz_file_path, extract_to_folder):
     
     with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
         zip_ref.extractall(extract_to_folder)
+    
+    # Cleanup: rename back to .saz
+    os.rename(zip_file_path, saz_file_path)
 
 def parse_index_file(index_file_path):
     with open(index_file_path, 'r', encoding='utf-8') as file:
@@ -44,6 +47,10 @@ def parse_index_file(index_file_path):
 def main(saz_file_path):
     extract_to_folder = 'extracted_files'
     
+    # Create folder if it doesn't exist
+    if not os.path.exists(extract_to_folder):
+        os.makedirs(extract_to_folder)
+    
     extract_saz_file(saz_file_path, extract_to_folder)
     
     index_file_path = os.path.join(extract_to_folder, '_index.htm')
@@ -52,16 +59,16 @@ def main(saz_file_path):
     
     df = pd.DataFrame(results)
     
-    df.to_excel('filtered_results.xlsx', index=False)
+    output_path = 'filtered_results.xlsx'
+    df.to_excel(output_path, index=False)
 
-    print("The results have been recorded in filtered_results.xlsx file.")
+    print(f"The results have been recorded in {output_path}")
 
-saz_file_path = r'C:\Users\v-dmutua\Documents\Fiddler2\Captures\446.saz'
-main(saz_file_path)
-
-   results.append({
-                'Process': row['Process'],
-                 'x-hostip': x_hostip,
-                 'https-client-snihostname': https_client_snihostname,
-                 'Status': status
-        })
+if __name__ == '__main__':
+    # This block only runs if the script is run directly
+    import sys
+    if len(sys.argv) > 1:
+        saz_file_path = sys.argv[1]
+        main(saz_file_path)
+    else:
+        print("Error: Please provide a .saz file path")

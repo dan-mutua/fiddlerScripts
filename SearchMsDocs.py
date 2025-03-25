@@ -12,7 +12,7 @@ data = response.json()
 urls = [item['urls'] for item in data if 'urls' in item]
 flat_urls = [url.lower() for sublist in urls for url in sublist]
 
-print(f"Sample URLs from API (first 5): {flat_urls[:5]}")
+#print(f"Sample URLs from API (first 5): {flat_urls[:5]}")
 print(f"Total URLs fetched: {len(flat_urls)}")
 
 excel_path = r"C:\scripts\filtered_results.xlsx"
@@ -44,17 +44,12 @@ def check_hostname(hostname):
     
     return 'Fail'
 
-df['Result'] = df['https-client-snihostname'].apply(check_hostname)
+df['msDocsResult'] = df['https-client-snihostname'].apply(check_hostname)
 
-print("\nSample Results (first 20):")
-for i, (hostname, result) in enumerate(zip(df['https-client-snihostname'].head(20), df['Result'].head(20))):
-    if result == 'Pass':
-        print(f"{hostname}: {Fore.GREEN}{result}{Style.RESET_ALL}")
-    else:
-        print(f"{hostname}: {Fore.RED}{result}{Style.RESET_ALL}")
 
-pass_count = (df['Result'] == 'Pass').sum()
-fail_count = (df['Result'] == 'Fail').sum()
+
+pass_count = (df['msDocsResult'] == 'Pass').sum()
+fail_count = (df['msDocsResult'] == 'Fail').sum()
 print(f"\nSummary: {Fore.GREEN}{pass_count} Pass{Style.RESET_ALL}, {Fore.RED}{fail_count} Fail{Style.RESET_ALL}")
 
 df.to_excel(excel_path, index=False)
