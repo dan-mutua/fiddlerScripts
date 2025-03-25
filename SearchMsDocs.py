@@ -1,12 +1,16 @@
 import requests
 import pandas as pd
+import colorama
+from colorama import Fore, Style
+
+colorama.init()
 
 url = "https://endpoints.office.com/endpoints/worldwide?clientrequestid=b10c5ed1-bad1-445f-b386-b919946339a7"
 response = requests.get(url)
 data = response.json()
 
 urls = [item['urls'] for item in data if 'urls' in item]
-flat_urls = [url.lower() for sublist in urls for url in sublist]  
+flat_urls = [url.lower() for sublist in urls for url in sublist]
 
 print(f"Sample URLs from API (first 5): {flat_urls[:5]}")
 print(f"Total URLs fetched: {len(flat_urls)}")
@@ -18,7 +22,7 @@ def check_hostname(hostname):
     if not isinstance(hostname, str):
         return 'Fail'
     
-    hostname = hostname.lower() 
+    hostname = hostname.lower()
     
     if any(hostname in url for url in flat_urls):
         return 'Pass'
@@ -40,15 +44,19 @@ def check_hostname(hostname):
     
     return 'Fail'
 
-
-print(f"Sample hostnames from Excel (first 5): {df['https-client-snihostname'].head(5).tolist()}")
-
 df['Result'] = df['https-client-snihostname'].apply(check_hostname)
+
+print("\nSample Results (first 20):")
+for i, (hostname, result) in enumerate(zip(df['https-client-snihostname'].head(20), df['Result'].head(20))):
+    if result == 'Pass':
+        print(f"{hostname}: {Fore.GREEN}{result}{Style.RESET_ALL}")
+    else:
+        print(f"{hostname}: {Fore.RED}{result}{Style.RESET_ALL}")
 
 pass_count = (df['Result'] == 'Pass').sum()
 fail_count = (df['Result'] == 'Fail').sum()
-print(f"Results: {pass_count} Pass, {fail_count} Fail")
+print(f"\nSummary: {Fore.GREEN}{pass_count} Pass{Style.RESET_ALL}, {Fore.RED}{fail_count} Fail{Style.RESET_ALL}")
 
 df.to_excel(excel_path, index=False)
 
-print("Results have been recorded in the Excel file.")
+print("\nResults have been recorded in the Excel file.")
